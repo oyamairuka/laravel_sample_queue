@@ -1,16 +1,8 @@
+#include "LSQ.h"
+#include "ServerApplication/LSQApplication.h"
+
 #include <iostream>
-#include <vector>
-#include <string>
 
-using namespace std;
+using namespace LSQ;
 
-int main()
-{
-    vector<string> msg{"Hello", "C++", "World", "from", "VS Code", "and the C++ extension!"};
-
-    for (const string &word : msg)
-    {
-        cout << word << " ";
-    }
-    cout << endl;
-}
+POCO_SERVER_MAIN(LSQApplication)
