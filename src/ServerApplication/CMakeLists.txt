@@ -8,5 +8,5 @@ target_include_directories(ServerApplicationMod
   PUBLIC ${LSQ_INCLUDE_DIRS}
   PUBLIC ${Poco_INCLUDE_DIRS}
 )
-target_link_libraries(ServerApplicationMod
-                      SubsystemsMod)
+#target_link_libraries(ServerApplicationMod
+#                      SubsystemsMod)

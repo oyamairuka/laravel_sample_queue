@@ -3,7 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "~/works/tool/include",
+                "/usr/local/include",
                 "${workspaceFolder}/**"
             ],
             "defines": [],

@@ -1,6 +1,6 @@
 #ifndef LSQ_LSQ_INCLUDED
 #define LSQ_LSQ_INCLUDED
 
-#define POCO_STATIC
+// #define POCO_STATIC
 
 #endif // LSQ_LSQ_INCLUDED
