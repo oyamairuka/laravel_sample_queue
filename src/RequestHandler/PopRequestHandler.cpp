@@ -33,7 +33,7 @@ void PopRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResp
     }
     else
     {
-        response.send();
+        response.send() << "";
     }
 
     app().logger().information("[END] PopRequestHandler::handleRequest");
