@@ -17,31 +17,44 @@ namespace LSQ
 
 void PushRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
-    app().logger().information("[START] PushRequestHandler::handleRequest");
-
-    Object *jsonObject = new Object;
-    Object::Ptr pJsonObject(jsonObject);
-    HTMLForm form(request, request.stream());
-    for (auto &e : form)
+    try
     {
-        pJsonObject->set(e.first, e.second);
+        app().logger().information("[START] PushRequestHandler::handleRequest");
+        response.setChunkedTransferEncoding(true);
+        response.setContentType("text");
+
+        Object *jsonObject = new Object;
+        Object::Ptr pJsonObject(jsonObject);
+        HTMLForm form(request, request.stream());
+        for (auto &e : form)
+        {
+            pJsonObject->set(e.first, e.second);
+        }
+
+        QueueElement e;
+        e.setId(app().getSubsystem<LSQQueue>().nextId());
+        e.setQueue(pJsonObject->get(QueueElement::QUEUE));
+        e.setPayload(pJsonObject->get(QueueElement::PAYLOAD));
+        e.setAttempts(pJsonObject->get(QueueElement::ATTEMPTS));
+        e.setReservedAt(pJsonObject->get(QueueElement::RESERVED_AT));
+        e.setAvailableAt(pJsonObject->get(QueueElement::AVAILABLE_AT));
+        e.setCreatedAt(pJsonObject->get(QueueElement::CREATED_AT));
+        app().getSubsystem<LSQQueue>().push(e);
+
+        response.send() << SUCCESS();
+
+        app().logger().information("[END] PushRequestHandler::handleRequest");
     }
-
-    QueueElement e;
-    e.setId(app().getSubsystem<LSQQueue>().nextId());
-    e.setQueue(pJsonObject->get(QueueElement::QUEUE));
-    e.setPayload(pJsonObject->get(QueueElement::PAYLOAD));
-    e.setAttempts(pJsonObject->get(QueueElement::ATTEMPTS));
-    e.setReservedAt(pJsonObject->get(QueueElement::RESERVED_AT));
-    e.setAvailableAt(pJsonObject->get(QueueElement::AVAILABLE_AT));
-    e.setCreatedAt(pJsonObject->get(QueueElement::CREATED_AT));
-    app().getSubsystem<LSQQueue>().push(e);
-
-    response.setChunkedTransferEncoding(true);
-    response.setContentType("text");
-    response.send() << "Thank You Request " << request.getURI();
-
-    app().logger().information("[END] PushRequestHandler::handleRequest");
+    catch (const std::exception &e)
+    {
+        app().logger().error(e.what());
+        response.send() << FAILED();
+    }
+    catch (...)
+    {
+        app().logger().error("unexpected error.");
+        response.send() << FAILED();
+    }
 }
 
 } // namespace LSQ

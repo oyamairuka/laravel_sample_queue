@@ -17,26 +17,39 @@ namespace LSQ
 
 void PopRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
-    app().logger().information("[START] PopRequestHandler::handleRequest");
-    response.setChunkedTransferEncoding(true);
-    response.setContentType("json");
+    try
+    {
+        app().logger().information("[START] PopRequestHandler::handleRequest");
+        response.setChunkedTransferEncoding(true);
+        response.setContentType("json");
 
-    std::pair<bool, QueueElement> p = app().getSubsystem<LSQQueue>().pop();
-    if (p.first)
-    {
-        QueueElement e = p.second;
-        Object::Ptr pJsonObject(e.toJsonObject());
-        std::ostringstream oss;
-        pJsonObject->stringify(oss);
-        app().logger().debug(oss.str());
-        response.send() << oss.str();
+        std::pair<bool, QueueElement> p = app().getSubsystem<LSQQueue>().pop();
+        if (p.first)
+        {
+            QueueElement e = p.second;
+            Object::Ptr pJsonObject(e.toJsonObject());
+            std::ostringstream oss;
+            pJsonObject->stringify(oss);
+            app().logger().debug(oss.str());
+            response.send() << oss.str();
+        }
+        else
+        {
+            response.send() << "";
+        }
+
+        app().logger().information("[END] PopRequestHandler::handleRequest");
     }
-    else
+    catch (const std::exception &e)
     {
+        app().logger().error(e.what());
         response.send() << "";
     }
-
-    app().logger().information("[END] PopRequestHandler::handleRequest");
+    catch (...)
+    {
+        app().logger().error("unexpected error.");
+        response.send() << "";
+    }
 }
 
 } // namespace LSQ

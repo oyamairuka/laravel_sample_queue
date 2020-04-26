@@ -5,10 +5,14 @@
 
 namespace LSQ
 {
-    inline Poco::Util::Application& app()
-    {
-        return Poco::Util::Application::instance();
-    }
+inline Poco::Util::Application &app()
+{
+    return Poco::Util::Application::instance();
+}
+
+// httpリクエストで実行される各処理の結果コード
+inline int SUCCESS() { return 0; }
+inline int FAILED() { return -1; }
 
 } // namespace LSQ
 
