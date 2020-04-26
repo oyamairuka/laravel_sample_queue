@@ -11,8 +11,8 @@ inline Poco::Util::Application &app()
 }
 
 // httpリクエストで実行される各処理の結果コード
-inline int SUCCESS() { return 0; }
-inline int FAILED() { return -1; }
+inline const int SUCCESS() { return 0; }
+inline const int FAILED() { return -1; }
 
 } // namespace LSQ
 
