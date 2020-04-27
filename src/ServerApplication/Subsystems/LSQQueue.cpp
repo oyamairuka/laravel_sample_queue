@@ -4,6 +4,7 @@
 
 #include "Poco/JSON/Object.h"
 #include "Poco/JSON/Array.h"
+#include "Poco/Path.h"
 
 #include <sstream>
 #include <fstream>
@@ -23,6 +24,9 @@ LSQQueue::~LSQQueue() {}
 void LSQQueue::initialize(Application &app)
 {
     app.logger().information("[START] Subsystem LSQQueue::initialize");
+    Poco::Path p(app.config().getString("data.dir"));
+    p.setFileName(app.config().getString("data.file"));
+    dataFile_ = p.toString();
     app.logger().information("[END] Subsystem LSQQueue::initialize");
 }
 
@@ -77,15 +81,14 @@ void LSQQueue::save()
         }
         std::ostringstream oss;
         pArray->stringify(oss);
-        std::string filePath = app().config().getString("data");
-        std::ofstream ofs(filePath);
+        std::ofstream ofs(dataFile_);
         if (ofs)
         {
             ofs << oss.str();
         }
         else
         {
-            throw std::runtime_error("can't open data file : " + filePath);
+            throw std::runtime_error("can't open data file : " + dataFile_);
         }
 
         app().logger().information("[END] LSQQueue::save");

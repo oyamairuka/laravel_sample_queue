@@ -60,6 +60,7 @@ void LSQConsole::start()
             break;
         case WRITE:
             app().getSubsystem<LSQQueue>().save();
+            std::cout << "save command was completed normally." << std::endl;
             break;
         case QUIT:
             quit = true;

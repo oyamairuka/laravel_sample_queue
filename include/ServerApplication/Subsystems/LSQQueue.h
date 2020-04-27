@@ -36,6 +36,8 @@ protected:
 private:
     // このサブシステム(キューを管理する)のインスタンスにおいて最後に発行されたジョブID
     unsigned long long lastId_;
+    // データファイルの絶対パス
+    std::string dataFile_;
     std::priority_queue<QueueElement> queue_;
     std::mutex mtx_;
 };
