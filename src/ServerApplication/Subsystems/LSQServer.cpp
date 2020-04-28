@@ -32,6 +32,7 @@ void LSQServer::initialize(Application &app)
 void LSQServer::uninitialize()
 {
     app().logger().information("[START] Subsystem LSQServer::uninitialize");
+    pSrv_->stop();
     app().logger().information("[END] Subsystem LSQServer::uninitialize");
 }
 
