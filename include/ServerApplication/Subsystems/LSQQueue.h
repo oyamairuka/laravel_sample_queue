@@ -22,6 +22,7 @@ public:
 
     size_t size() const;
     void push(const QueueElement &e);
+    void pushAutoIncrement(QueueElement &e);
     void save();
     std::pair<bool, QueueElement> pop();
 
@@ -34,10 +35,14 @@ protected:
     void uninitialize() override;
 
 private:
+    void readDateFile();
+
     // このサブシステム(キューを管理する)のインスタンスにおいて最後に発行されたジョブID
     unsigned long long lastId_;
     // データファイルの絶対パス
     std::string dataFile_;
+    // IDの現在値を保存するファイルの絶対パス
+    std::string lastIdFile_;
     std::priority_queue<QueueElement> queue_;
     std::mutex mtx_;
 };
