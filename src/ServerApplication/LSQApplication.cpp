@@ -21,7 +21,6 @@ LSQApplication::LSQApplication()
 {
     addSubsystem(new LSQQueue);
     addSubsystem(new LSQServer);
-    addSubsystem(new LSQConsole);
 }
 
 void LSQApplication::initialize(Application &self)
@@ -36,10 +35,9 @@ int LSQApplication::main(const std::vector<std::string> &)
     try
     {
         getSubsystem<LSQServer>().start();
-        getSubsystem<LSQConsole>().start();
-        std::cout << "to stop LSQServer please type ctrl + c." << std::endl;
         waitForTerminationRequest();
         getSubsystem<LSQServer>().stop();
+        getSubsystem<LSQQueue>().save();
     }
     catch (std::exception &e)
     {
