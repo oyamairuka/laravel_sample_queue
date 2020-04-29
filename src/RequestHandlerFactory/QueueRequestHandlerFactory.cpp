@@ -9,21 +9,27 @@
 #include "RequestHandler/PushRawRequestHandler.h"
 #include "RequestHandler/PushRequestHandler.h"
 #include "RequestHandler/SizeRequestHandler.h"
+#include "RequestHandler/CommandRequestHandler.h"
+
+#include "Poco/URI.h"
 
 #include <iostream>
+#include <vector>
 
 namespace LSQ
 {
+// URL
+const std::string LSQ = "lsq";
+const std::string BULK = "/" + LSQ + "/bulk";
+const std::string LATER_ON = "/" + LSQ + "/laterOn";
+const std::string LATER = "/" + LSQ + "/later";
+const std::string POP = "/" + LSQ + "/pop";
+const std::string PUSH_ON = "/" + LSQ + "/pushOn";
+const std::string PUSH_RAW = "/" + LSQ + "/pushRaw";
+const std::string PUSH = "/" + LSQ + "/push";
+const std::string SIZE = "/" + LSQ + "/size";
 
-const std::string BULK = "/bulk";
-const std::string LATER_ON = "/laterOn";
-const std::string LATER = "/later";
-const std::string POP = "/pop";
-const std::string PUSH_ON = "/pushOn";
-const std::string PUSH_RAW = "/pushRaw";
-const std::string PUSH = "/push";
-const std::string SIZE = "/size";
-
+// ハンドラーファクトリー関数
 HTTPRequestHandler *BulkRequestHandlerFactory(const HTTPServerRequest &) { return new BulkRequestHandler; }
 HTTPRequestHandler *LaterOnRequestHandlerFactory(const HTTPServerRequest &) { return new LaterOnRequestHandler; }
 HTTPRequestHandler *LaterRequestHandlerFactory(const HTTPServerRequest &) { return new LaterRequestHandler; }
@@ -32,6 +38,9 @@ HTTPRequestHandler *PushOnRequestHandlerFactory(const HTTPServerRequest &) { ret
 HTTPRequestHandler *PushRawRequestHandlerFactory(const HTTPServerRequest &) { return new PushRawRequestHandler; }
 HTTPRequestHandler *PushRequestHandlerFactory(const HTTPServerRequest &) { return new PushRequestHandler; }
 HTTPRequestHandler *SizeRequestHandlerFactory(const HTTPServerRequest &) { return new SizeRequestHandler; }
+
+// このハンドラーファクトリーはmapに登録せずに上記ハンドラー以外のリクエストに対応する
+HTTPRequestHandler *CommandRequestHandlerFactory(const HTTPServerRequest &) { return new CommandRequestHandler; }
 
 QueueRequestHandlerFactory::QueueRequestHandlerFactory()
 {
@@ -49,6 +58,16 @@ HTTPRequestHandler *QueueRequestHandlerFactory::createRequestHandler(const HTTPS
 {
     app().logger().information(request.getMethod());
     app().logger().information(request.getURI());
+    if (factorys_.find(std::make_pair(request.getMethod(), request.getURI())) == factorys_.end())
+    {
+        Poco::URI url(request.getURI());
+        std::vector<std::string> segments;
+        url.getPathSegments(segments);
+        if (segments.size() >= 2 && segments[0] == LSQ)
+        {
+            return CommandRequestHandlerFactory(request);
+        }
+    }
     return factorys_.at(std::make_pair(request.getMethod(), request.getURI()))(request);
 }
 

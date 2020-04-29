@@ -1,5 +1,5 @@
-#ifndef LSQ_LaterOnRequestHandler_INCLUDED
-#define LSQ_LaterOnRequestHandler_INCLUDED
+#ifndef LSQ_CommandRequestHandler_INCLUDED
+#define LSQ_CommandRequestHandler_INCLUDED
 
 #include "Poco/Net/HTTPRequestHandler.h"
 #include "Poco/Net/HTTPServerRequest.h"
@@ -10,7 +10,7 @@ using namespace Poco::Net;
 namespace LSQ
 {
 
-class LaterOnRequestHandler : public HTTPRequestHandler
+class CommandRequestHandler : public HTTPRequestHandler
 {
 public:
     void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response) override;
@@ -18,4 +18,4 @@ public:
 
 } // namespace LSQ
 
-#endif // LSQ_LaterOnRequestHandler_INCLUDED
+#endif // LSQ_CommandRequestHandler_INCLUDED

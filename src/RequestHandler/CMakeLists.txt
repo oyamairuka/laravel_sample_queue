@@ -7,6 +7,7 @@ add_library(RequestHandlerMod STATIC
             PushRawRequestHandler.cpp
             PushRequestHandler.cpp
             SizeRequestHandler.cpp
+            CommandRequestHandler.cpp
 )
 
 target_include_directories(RequestHandlerMod

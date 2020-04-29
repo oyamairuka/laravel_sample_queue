@@ -7,12 +7,13 @@
 
 using namespace Poco::Net;
 
-namespace LSQ {
+namespace LSQ
+{
 
-class BulkRequestHandler: public HTTPRequestHandler
+class BulkRequestHandler : public HTTPRequestHandler
 {
 public:
-    void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) override;
+    void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response) override;
 };
 
 } // namespace LSQ
