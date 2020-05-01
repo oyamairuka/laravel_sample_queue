@@ -1,5 +1,6 @@
 #include "LSQ.h"
 #include "ServerApplication/Subsystems/LSQSubsystem.h"
+#include "ServerApplication/Subsystems/LSQQueue.h"
 #include "RequestHandler/SizeRequestHandler.h"
 
 #include "Poco/Util/ServerApplication.h"
@@ -15,7 +16,7 @@ void SizeRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerRes
 
     response.setChunkedTransferEncoding(true);
     response.setContentType("text");
-    response.send() << "Thank You Request " << request.getURI();
+    response.send() << app().getSubsystem<LSQQueue>().size();
 }
 
 } // namespace LSQ
