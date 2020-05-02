@@ -14,6 +14,8 @@ class PopRequestHandler : public HTTPRequestHandler
 {
 public:
     void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response) override;
+
+    static const std::string CURRENT_TIME; // currentTime
 };
 
 } // namespace LSQ

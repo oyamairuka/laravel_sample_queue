@@ -5,15 +5,19 @@
 #include "Element/QueueElement.h"
 
 #include "Poco/Util/ServerApplication.h"
+#include "Poco/Net/HTMLForm.h"
 #include "Poco/JSON/Object.h"
 
 #include <sstream>
 
 using namespace Poco::Util;
+using namespace Poco::Net;
 using namespace Poco::JSON;
 
 namespace LSQ
 {
+
+const std::string PopRequestHandler::CURRENT_TIME = "currentTime";
 
 void PopRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
@@ -23,7 +27,15 @@ void PopRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResp
         response.setChunkedTransferEncoding(true);
         response.setContentType("json");
 
-        std::pair<bool, QueueElement> p = app().getSubsystem<LSQQueue>().pop();
+        Object *jsonObject = new Object;
+        Object::Ptr pJsonObject(jsonObject);
+        HTMLForm form(request, request.stream());
+        for (auto &e : form)
+        {
+            pJsonObject->set(e.first, e.second);
+        }
+
+        std::pair<bool, QueueElement> p = app().getSubsystem<LSQQueue>().pop(pJsonObject->get(PopRequestHandler::CURRENT_TIME));
         if (p.first)
         {
             QueueElement e = p.second;

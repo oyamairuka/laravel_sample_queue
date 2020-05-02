@@ -14,6 +14,11 @@ using namespace Poco::Util;
 namespace LSQ
 {
 
+struct Compare
+{
+    bool operator()(const QueueElement &lhs, const QueueElement &rhs) const;
+};
+
 class LSQQueue : public Subsystem
 {
 public:
@@ -24,7 +29,7 @@ public:
     void push(const QueueElement &e);
     void pushAutoIncrement(QueueElement &e);
     void save();
-    std::pair<bool, QueueElement> pop();
+    std::pair<bool, QueueElement> pop(int currentTime);
 
     unsigned long long lastId() { return lastId_; }
     unsigned long long nextId();
@@ -43,7 +48,7 @@ private:
     std::string dataFile_;
     // IDの現在値を保存するファイルの絶対パス
     std::string lastIdFile_;
-    std::priority_queue<QueueElement> queue_;
+    std::priority_queue<QueueElement, std::vector<QueueElement>, Compare> queue_;
     std::mutex mtx_;
 };
 

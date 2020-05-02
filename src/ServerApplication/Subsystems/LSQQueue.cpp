@@ -18,9 +18,20 @@ namespace LSQ
 
 // 終了時に現在のidを保存するファイル名
 const std::string LAST_ID_FILE_NAME = "id";
+// 取り出す要素の優先度を決める比較関数
+bool Compare::operator()(const QueueElement &lhs, const QueueElement &rhs) const
+{
+    // lhsの方が優先順位が低い場合にtrueを返す
+    if (lhs.availableAt() == rhs.availableAt())
+    {
+        return lhs.id() > rhs.id();
+    }
+    return lhs.availableAt() > rhs.availableAt();
+}
 
 LSQQueue::LSQQueue()
-    : lastId_(0)
+    : lastId_(0),
+      queue_(Compare())
 {
 }
 
@@ -62,7 +73,7 @@ void LSQQueue::pushAutoIncrement(QueueElement &e)
     queue_.push(e);
 }
 
-std::pair<bool, QueueElement> LSQQueue::pop()
+std::pair<bool, QueueElement> LSQQueue::pop(int currentTime)
 {
     std::lock_guard<std::mutex> lock(mtx_);
     if (queue_.empty())
@@ -71,6 +82,14 @@ std::pair<bool, QueueElement> LSQQueue::pop()
         return std::pair<bool, QueueElement>(false, e);
     }
     QueueElement save = queue_.top();
+    app().logger().debug("ID : " + std::to_string(save.id()));
+    app().logger().debug("AVAILABLE_AT : " + std::to_string(save.availableAt()));
+    app().logger().debug("currentTime : " + std::to_string(currentTime));
+    if (currentTime < save.availableAt())
+    {
+        QueueElement e;
+        return std::pair<bool, QueueElement>(false, e);
+    }
     queue_.pop();
     return std::pair<bool, QueueElement>(true, save);
 }
