@@ -1,10 +1,5 @@
 add_library(RequestHandlerMod STATIC
-            BulkRequestHandler.cpp
-            LaterOnRequestHandler.cpp
-            LaterRequestHandler.cpp
             PopRequestHandler.cpp
-            PushOnRequestHandler.cpp
-            PushRawRequestHandler.cpp
             PushRequestHandler.cpp
             SizeRequestHandler.cpp
             CommandRequestHandler.cpp
