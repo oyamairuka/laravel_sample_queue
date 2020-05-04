@@ -3,6 +3,7 @@
 LaravelのQueueとして利用できるプログラム.<br>
 LaravelのQueueの仕組みの理解のために作った個人的な練習.<br>
 現状では通常のdispatchとdelayの実行までは確認.<br>
+
 例:
 ```php:title
 LSQTestJob::dispatch(new DateTime());
